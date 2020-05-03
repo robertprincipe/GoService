@@ -9,3 +9,19 @@ type Product struct {
 	ListPrice    float64 `json:"list_price"`
 	Category     string  `json:"category"`
 }
+
+type ProductList struct {
+	Data         []*Product `json:"data"`
+	TotalRecords int        `json:"total_records"`
+}
+
+type ProductTop struct {
+	ID          int     `json:"id"`
+	ProductName string  `json:"product_name"`
+	Sellers     float64 `json:"sellers"`
+}
+
+type ProductTopResponse struct {
+	Data         []*ProductTop `json:"data"`
+	TotalSellers float64       `json:"total_sellers"`
+}
