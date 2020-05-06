@@ -11,7 +11,8 @@ import (
 	kithttp "github.com/go-kit/kit/transport/http"
 )
 
-func MakeHttpHandler(s Service) http.Handler {
+// MakeHTTPHandler handler for employees
+func MakeHTTPHandler(s Service) http.Handler {
 	r := chi.NewRouter()
 
 	getProductByIDHandler := kithttp.NewServer(makeGetProductByIDEndpoint(s), getProductByIDRequestDecoder, kithttp.EncodeJSONResponse)
