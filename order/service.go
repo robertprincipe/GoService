@@ -3,6 +3,8 @@ package order
 type Service interface {
 	GetOrderByID(param *getOrderByIDRequest) (*OrderItem, error)
 	GetOrders(params *getOrdersRequest) (*OrderList, error)
+	InsertOrder(params *addOrderRequest) (int64, error)
+	UpdateOrder(params *addOrderRequest) (int64, error)
 }
 
 type service struct {
@@ -34,4 +36,44 @@ func (s *service) GetOrders(params *getOrdersRequest) (*OrderList, error) {
 		Data:         orders,
 		TotalRecords: totalRecords,
 	}, nil
+}
+
+func (s *service) InsertOrder(params *addOrderRequest) (int64, error) {
+	id, err := s.r.InsertOrder(params)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, detail := range params.OrderDetails {
+		detail.OrderID = id
+		_, err := s.r.InsertOrderDetail(&detail)
+		if err != nil {
+			panic(err)
+		}
+	}
+	return id, nil
+}
+
+func (s *service) UpdateOrder(params *addOrderRequest) (int64, error) {
+	orderId, err := s.r.UpdateOrder(params)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, detail := range params.OrderDetails {
+		detail.OrderID = orderId
+		if detail.ID == 0 {
+			_, err := s.r.InsertOrderDetail(&detail)
+			if err != nil {
+				panic(err)
+			}
+		} else {
+			_, err := s.r.UpdateOrderDetail(&detail)
+			if err != nil {
+				panic(err)
+			}
+		}
+	}
+
+	return orderId, nil
 }

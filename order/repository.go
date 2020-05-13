@@ -9,6 +9,10 @@ type Repository interface {
 	GetOrderByID(param *getOrderByIDRequest) (*OrderItem, error)
 	GetOrders(params *getOrdersRequest) ([]*OrderItem, error)
 	GetTotalOrders(params *getOrdersRequest) (int64, error)
+	InsertOrder(params *addOrderRequest) (int64, error)
+	InsertOrderDetail(params *addOrderDetailRequest) (int64, error)
+	UpdateOrder(params *addOrderRequest) (int64, error)
+	UpdateOrderDetail(params *addOrderDetailRequest) (int64, error)
 }
 
 type repository struct {
@@ -168,4 +172,66 @@ func (r *repository) GetTotalOrders(params *getOrdersRequest) (int64, error) {
 	}
 
 	return totalRecords, nil
+}
+
+func (r *repository) InsertOrder(params *addOrderRequest) (int64, error) {
+	const query = `
+		-- beginsql
+		INSERT INTO orders (customer_id, order_date) VALUES(?, ?)
+		-- endsql
+	`
+	result, err := r.db.Exec(query, params.CustomerID, params.OrderDate)
+	if err != nil {
+		panic(err)
+	}
+	id, err := result.LastInsertId()
+
+	if err != nil {
+		panic(err)
+	}
+
+	return id, nil
+}
+
+func (r *repository) InsertOrderDetail(params *addOrderDetailRequest) (int64, error) {
+	const query = `
+	-- beginsql
+	INSERT INTO order_details(order_id, product_id, quantity, unit_price) 
+	VALUES(?, ?, ?, ?)
+	-- endsql
+	`
+	result, err := r.db.Exec(query, params.OrderID, params.ProductID, params.Quantity, params.UnitPrice)
+	if err != nil {
+		panic(err)
+	}
+	id, err := result.LastInsertId()
+	if err != nil {
+		panic(err)
+	}
+	return id, nil
+}
+
+func (r *repository) UpdateOrder(params *addOrderRequest) (int64, error) {
+	const query = `
+	-- beginsql
+	UPDATE orders SET customer_id = ? WHERE id = ?
+	-- endsql
+	`
+	_, err := r.db.Exec(query, params.CustomerID, params.ID)
+	if err != nil {
+		panic(err)
+	}
+	return params.ID, nil
+}
+func (r *repository) UpdateOrderDetail(params *addOrderDetailRequest) (int64, error) {
+	const query = `
+	-- beginsql
+	UPDATE order_details SET quantity = ?, unit_price = ? WHERE id = ?
+	-- endsql
+	`
+	_, err := r.db.Exec(query, params.Quantity, params.UnitPrice, params.ID)
+	if err != nil {
+		panic(err)
+	}
+	return params.ID, nil
 }
