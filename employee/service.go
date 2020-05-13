@@ -17,7 +17,7 @@ func NewService(r Repository) Service {
 	return &service{r}
 }
 
-func (s service) GetEmployees(params *getEmployeesRequest) (*EmployeeList, error) {
+func (s *service) GetEmployees(params *getEmployeesRequest) (*EmployeeList, error) {
 	employees, err := s.r.GetEmployees(params)
 
 	if err != nil {
@@ -35,7 +35,7 @@ func (s service) GetEmployees(params *getEmployeesRequest) (*EmployeeList, error
 	}, nil
 }
 
-func (s service) GetEmployeeByID(param *getEmployeeByIDRequest) (*Employee, error) {
+func (s *service) GetEmployeeByID(param *getEmployeeByIDRequest) (*Employee, error) {
 	employee, err := s.r.GetEmployeeByID(param)
 	if err != nil {
 		panic(err)
@@ -44,7 +44,7 @@ func (s service) GetEmployeeByID(param *getEmployeeByIDRequest) (*Employee, erro
 	return employee, nil
 }
 
-func (s service) GetBestEmployeed() (*BestEmployee, error) {
+func (s *service) GetBestEmployeed() (*BestEmployee, error) {
 	bestEmployee, err := s.r.GetBestEmployee()
 	if err != nil {
 		panic(err)
@@ -52,7 +52,7 @@ func (s service) GetBestEmployeed() (*BestEmployee, error) {
 	return bestEmployee, nil
 }
 
-func (s service) InsertEmployee(params *getAddEmployeeRequest) (int64, error) {
+func (s *service) InsertEmployee(params *getAddEmployeeRequest) (int64, error) {
 	rowsAffected, err := s.r.InsertEmployee(params)
 	if err != nil {
 		panic(err)
@@ -60,7 +60,7 @@ func (s service) InsertEmployee(params *getAddEmployeeRequest) (int64, error) {
 	return rowsAffected, nil
 }
 
-func (s service) DeleteEmployee(param *deleteEmployeeRequest) (int64, error) {
+func (s *service) DeleteEmployee(param *deleteEmployeeRequest) (int64, error) {
 	rowsAffected, err := s.r.DeleteEmployee(param)
 	if err != nil {
 		panic(err)
@@ -69,7 +69,7 @@ func (s service) DeleteEmployee(param *deleteEmployeeRequest) (int64, error) {
 	return rowsAffected, nil
 }
 
-func (s service) UpdateEmployee(params *updateEmployeeRequest) (int64, error) {
+func (s *service) UpdateEmployee(params *updateEmployeeRequest) (int64, error) {
 	rowsAffected, err := s.r.UpdateEmployee(params)
 	if err != nil {
 		panic(err)

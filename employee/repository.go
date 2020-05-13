@@ -17,10 +17,10 @@ type repository struct {
 }
 
 func NewRepository(db *sql.DB) Repository {
-	return repository{db}
+	return &repository{db}
 }
 
-func (r repository) GetEmployees(params *getEmployeesRequest) ([]*Employee, error) {
+func (r *repository) GetEmployees(params *getEmployeesRequest) ([]*Employee, error) {
 	const query = `
 	-- beginsql
 	SELECT id, first_name, last_name, company, job_title, email_address, business_phone, home_phone, COALESCE(mobile_phone , ''),
@@ -51,7 +51,7 @@ func (r repository) GetEmployees(params *getEmployeesRequest) ([]*Employee, erro
 	return employees, nil
 }
 
-func (r repository) GetTotalEmployees() (int64, error) {
+func (r *repository) GetTotalEmployees() (int64, error) {
 	const query = `
 	-- beginsql
 	SELECT COUNT(*) FROM employees
@@ -68,7 +68,7 @@ func (r repository) GetTotalEmployees() (int64, error) {
 	return totalEmployees, nil
 }
 
-func (r repository) GetEmployeeByID(param *getEmployeeByIDRequest) (*Employee, error) {
+func (r *repository) GetEmployeeByID(param *getEmployeeByIDRequest) (*Employee, error) {
 	const query = `
 	-- beginsql
 	SELECT id, first_name, last_name, company, job_title, email_address, business_phone, home_phone, COALESCE(mobile_phone , ''),
@@ -86,7 +86,7 @@ func (r repository) GetEmployeeByID(param *getEmployeeByIDRequest) (*Employee, e
 	return employee, err
 }
 
-func (r repository) GetBestEmployee() (*BestEmployee, error) {
+func (r *repository) GetBestEmployee() (*BestEmployee, error) {
 	const query = `
 	-- beginsql
 	SELECT 
@@ -110,7 +110,7 @@ func (r repository) GetBestEmployee() (*BestEmployee, error) {
 	return bestEmployee, nil
 }
 
-func (r repository) InsertEmployee(params *getAddEmployeeRequest) (int64, error) {
+func (r *repository) InsertEmployee(params *getAddEmployeeRequest) (int64, error) {
 	const query = `
 	-- beginsql
 	INSERT INTO employees
@@ -133,7 +133,7 @@ func (r repository) InsertEmployee(params *getAddEmployeeRequest) (int64, error)
 	return rowsAffected, nil
 }
 
-func (r repository) UpdateEmployee(params *updateEmployeeRequest) (int64, error) {
+func (r *repository) UpdateEmployee(params *updateEmployeeRequest) (int64, error) {
 	const query = `
 	-- beginsql
 	UPDATE employees SET first_name = ?, last_name = ?, company = ?, job_title = ?, email_address = ?, 
@@ -153,7 +153,7 @@ func (r repository) UpdateEmployee(params *updateEmployeeRequest) (int64, error)
 	return rowsAffected, nil
 }
 
-func (r repository) DeleteEmployee(param *deleteEmployeeRequest) (int64, error) {
+func (r *repository) DeleteEmployee(param *deleteEmployeeRequest) (int64, error) {
 	const query = `
 	-- beginsql
 	DELETE FROM employees WHERE id = ?
