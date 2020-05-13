@@ -13,6 +13,9 @@ type Repository interface {
 	InsertOrderDetail(params *addOrderDetailRequest) (int64, error)
 	UpdateOrder(params *addOrderRequest) (int64, error)
 	UpdateOrderDetail(params *addOrderDetailRequest) (int64, error)
+	DeleteOrderDetail(param *deleteOrderDetailRequest) (int64, error)
+	DeleteOrderDetailByOrderID(param *deleteOrderRequest) (int64, error)
+	DeleteOrder(param *deleteOrderRequest) (int64, error)
 }
 
 type repository struct {
@@ -234,4 +237,61 @@ func (r *repository) UpdateOrderDetail(params *addOrderDetailRequest) (int64, er
 		panic(err)
 	}
 	return params.ID, nil
+}
+
+func (r *repository) DeleteOrderDetail(param *deleteOrderDetailRequest) (int64, error) {
+	const query = `
+	-- beginsql
+	DELETE FROM order_details WHERE id = ?
+	-- endsql
+	`
+	result, err := r.db.Exec(query, param.OrderDetailID)
+	if err != nil {
+		panic(err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+
+	if err != nil {
+		panic(err)
+	}
+
+	return rowsAffected, nil
+}
+
+func (r *repository) DeleteOrderDetailByOrderID(param *deleteOrderRequest) (int64, error) {
+	const query = `
+	-- beginsql
+	DELETE FROM order_details WHERE order_id = ?
+	-- endsql
+	`
+	result, err := r.db.Exec(query, param.OrderID)
+	if err != nil {
+		panic(err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		panic(err)
+	}
+
+	return rowsAffected, nil
+}
+func (r *repository) DeleteOrder(param *deleteOrderRequest) (int64, error) {
+	const query = `
+	-- beginsql
+	DELETE FROM orders WHERE id = ?
+	-- endsql
+	`
+	result, err := r.db.Exec(query, param.OrderID)
+	if err != nil {
+		panic(err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		panic(err)
+	}
+
+	return rowsAffected, nil
 }

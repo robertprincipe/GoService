@@ -5,6 +5,8 @@ type Service interface {
 	GetOrders(params *getOrdersRequest) (*OrderList, error)
 	InsertOrder(params *addOrderRequest) (int64, error)
 	UpdateOrder(params *addOrderRequest) (int64, error)
+	DeleteOrderDetail(param *deleteOrderDetailRequest) (int64, error)
+	DeleteOrder(param *deleteOrderRequest) (int64, error)
 }
 
 type service struct {
@@ -76,4 +78,20 @@ func (s *service) UpdateOrder(params *addOrderRequest) (int64, error) {
 	}
 
 	return orderId, nil
+}
+
+func (s *service) DeleteOrderDetail(param *deleteOrderDetailRequest) (int64, error) {
+	rowsAffected, err := s.r.DeleteOrderDetail(param)
+	if err != nil {
+		panic(err)
+	}
+	return rowsAffected, nil
+}
+
+func (s *service) DeleteOrder(param *deleteOrderRequest) (int64, error) {
+	_, err := s.r.DeleteOrderDetailByOrderID(param)
+	if err != nil {
+		panic(err)
+	}
+	return s.r.DeleteOrder(param)
 }
