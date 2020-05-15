@@ -10,6 +10,7 @@ import (
 	"github.com/robertprincipe/goservice/employee"
 	"github.com/robertprincipe/goservice/order"
 	"github.com/robertprincipe/goservice/product"
+	"github.com/robertprincipe/goservice/utils"
 
 	_ "github.com/robertprincipe/goservice/docs"
 	httpSwagger "github.com/swaggo/http-swagger"
@@ -47,7 +48,7 @@ func main() {
 	orderService = order.NewService(orderRepository)
 
 	r := chi.NewRouter()
-
+	r.Use(utils.GetCORS().Handler)
 	r.Mount("/products", product.MakeHTTPHandler(productService))
 	r.Mount("/employees", employee.MakeHTTPHandler(employeeService))
 	r.Mount("/customers", customer.MakeHTTPHandler(customerService))
