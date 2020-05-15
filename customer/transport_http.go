@@ -14,7 +14,7 @@ func MakeHTTPHandler(s Service) http.Handler {
 
 	getCustomersHandler := kithttp.NewServer(makeGetCustomersEnpoint(s), getCustomersRequestDecoder, kithttp.EncodeJSONResponse)
 
-	r.Method(http.MethodPost, "/", getCustomersHandler)
+	r.Method(http.MethodPost, "/paginated", getCustomersHandler)
 
 	return r
 }

@@ -10,7 +10,17 @@ import (
 	"github.com/robertprincipe/goservice/employee"
 	"github.com/robertprincipe/goservice/order"
 	"github.com/robertprincipe/goservice/product"
+
+	_ "github.com/robertprincipe/goservice/docs"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
+
+// @title GoService API
+// @version 1.0
+// @description This is a sample server celler server.
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
 
 func main() {
 	db := database.InitConnection()
@@ -42,6 +52,10 @@ func main() {
 	r.Mount("/employees", employee.MakeHTTPHandler(employeeService))
 	r.Mount("/customers", customer.MakeHTTPHandler(customerService))
 	r.Mount("/orders", order.MakeHTTPHandler(orderService))
+
+	r.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("../swagger/doc.json"),
+	))
 
 	http.ListenAndServe(":8008", r)
 }

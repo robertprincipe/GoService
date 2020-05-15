@@ -73,12 +73,17 @@ func deleteProductRequestDecoder(_ context.Context, r *http.Request) (interface{
 }
 
 func updateProductRequestDecoder(_ context.Context, r *http.Request) (interface{}, error) {
-	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
-	request := getUpdateProductRequest{ID: id}
-	err := json.NewDecoder(r.Body).Decode(&request)
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
 		panic(err)
 	}
+	request := getUpdateProductRequest{}
+	err = json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		panic(err)
+	}
+
+	request.ID = id
 
 	return request, nil
 }

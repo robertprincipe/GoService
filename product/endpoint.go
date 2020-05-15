@@ -40,6 +40,13 @@ type getUpdateProductRequest struct {
 
 type getBestSellersRequest struct{}
 
+// @Summary Lista de Productos
+// @Tags Products
+// @Accept json
+// @Produce json
+// @Param id path int true "User Data"
+// @Success 200 {object} product.Product "ok"
+// @Router /products/{id} [get]
 func makeGetProductByIDEndpoint(s Service) endpoint.Endpoint {
 	getProductByIDEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(getProductByIDRequest)
@@ -55,6 +62,13 @@ func makeGetProductByIDEndpoint(s Service) endpoint.Endpoint {
 	return getProductByIDEndpoint
 }
 
+// @Summary Producto por ID
+// @Tags Products
+// @Accept json
+// @Produce json
+// @Param request body product.getProductsRequest true "User Data"
+// @Success 200 {object} product.ProductList "ok"
+// @Router /products/paginated [post]
 func makeGetProductsEndpoint(s Service) endpoint.Endpoint {
 	getProductsEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(getProductsRequest)
@@ -70,6 +84,13 @@ func makeGetProductsEndpoint(s Service) endpoint.Endpoint {
 	return getProductsEndpoint
 }
 
+// @Summary Insertar un Producto
+// @Tags Products
+// @Accept json
+// @Produce json
+// @Param request body product.getAddProductRequest true "User Data"
+// @Success 200 {integer} int "ok"
+// @Router /products/ [post]
 func makeAddProductEndpoint(s Service) endpoint.Endpoint {
 	addProductEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(getAddProductRequest)
@@ -84,20 +105,33 @@ func makeAddProductEndpoint(s Service) endpoint.Endpoint {
 	return addProductEndpoint
 }
 
-func makeDeleteProductEndpoint(s Service) endpoint.Endpoint {
-	deleteProductEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(getDeleteProductRequest)
-		rowsAffected, err := s.DeleteProduct(&req)
+// @Summary Mejores Ventas Producto
+// @Tags Products
+// @Accept json
+// @Produce json
+// @Success 200 {object} product.ProductTopResponse "ok"
+// @Router /products/best-sellers [get]
+func makeGetBestSellers(s Service) endpoint.Endpoint {
+	bestSellersEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		bestSellers, err := s.GetBestSellers()
 		if err != nil {
 			panic(err)
 		}
 
-		return rowsAffected, nil
+		return bestSellers, nil
 	}
 
-	return deleteProductEndpoint
+	return bestSellersEndpoint
 }
 
+// @Summary Actualizar un Producto
+// @Tags Products
+// @Accept json
+// @Produce json
+// @Param id path int true "Product ID"
+// @Param request body product.getUpdateProductRequest true "User Data"
+// @Success 200 {integer} int "ok"
+// @Router /products/{id} [put]
 func makeUpdateProductEndpoint(s Service) endpoint.Endpoint {
 	updateProductEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(getUpdateProductRequest)
@@ -112,15 +146,23 @@ func makeUpdateProductEndpoint(s Service) endpoint.Endpoint {
 	return updateProductEndpoint
 }
 
-func makeGetBestSellers(s Service) endpoint.Endpoint {
-	bestSellersEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {
-		bestSellers, err := s.GetBestSellers()
+// @Summary Eliminar un Productos
+// @Tags Products
+// @Accept json
+// @Produce json
+// @Param id path int true "Product ID"
+// @Success 200 {integer} int "ok"
+// @Router /products/{id} [delete]
+func makeDeleteProductEndpoint(s Service) endpoint.Endpoint {
+	deleteProductEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(getDeleteProductRequest)
+		rowsAffected, err := s.DeleteProduct(&req)
 		if err != nil {
 			panic(err)
 		}
 
-		return bestSellers, nil
+		return rowsAffected, nil
 	}
 
-	return bestSellersEndpoint
+	return deleteProductEndpoint
 }
